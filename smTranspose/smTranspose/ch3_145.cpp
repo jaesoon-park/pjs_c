@@ -31,3 +31,18 @@ void smTranspose(term a[], term b[]) {
 		}
 	}
 }
+
+void main()
+{
+	term a[11] = {8,7,10,
+	0,2,2};
+	term b[11];
+
+	for (int i = 0; i < b[10].value; i++)
+	{
+		printf("%d %d %d\n", b[i].row, b[i].col, b[i].value);
+	}
+	
+
+	smTranspose(a, b);
+}
