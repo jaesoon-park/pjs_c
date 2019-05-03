@@ -6,10 +6,10 @@
 typedef struct ListNode {
 	 char data[4];
 	struct ListNode* link;
-}ListNode;
+}listNode;
 
 typedef struct {
-	ListNode*head;
+	listNode*head;
 }LinkedList_h;
 
 LinkedList_h* createLinkedList_h(void) {
@@ -20,7 +20,7 @@ LinkedList_h* createLinkedList_h(void) {
 }
 
 void freeLinkedList_h(LinkedList_h*L) {
-	ListNode*p;
+	listNode*p;
 	while (L->head != NULL) {
 		p = L->head;
 		L->head = L->head->link;
@@ -30,7 +30,7 @@ void freeLinkedList_h(LinkedList_h*L) {
 }
 
 void printList(LinkedList_h*L) {
-	ListNode* p;
+	listNode* p;
 	printf("L =(");
 	p = L->head;
 	while (p != NULL) {
@@ -42,16 +42,16 @@ void printList(LinkedList_h*L) {
 }
 
 void insertFirstNode(LinkedList_h *L,char *x) {
-	ListNode* newNode;
-	newNode = (ListNode*)malloc(sizeof(ListNode));
+	listNode* newNode;
+	newNode = (listNode*)malloc(sizeof(listNode));
 	strcpy(newNode->data, x);
 	newNode->link = L->head;
 	L->head = newNode;
 }
 
-void insertMiddleNode(LinkedList_h* L, ListNode *pre,char*x) {
-	ListNode* newNode;
-	newNode = (ListNode*)malloc(sizeof(ListNode));
+void insertMiddleNode(LinkedList_h* L, listNode *pre,char*x) {
+	listNode* newNode;
+	newNode = (listNode*)malloc(sizeof(listNode));
 	strcpy(newNode->data, x);
 	if (L == NULL) {
 		newNode->link = NULL;
@@ -67,9 +67,9 @@ void insertMiddleNode(LinkedList_h* L, ListNode *pre,char*x) {
 }
 
 void insertLastNode(LinkedList_h *L, char *x) {
-	ListNode* newNode;
-	ListNode* temp;
-	newNode = (ListNode*)malloc(sizeof(ListNode));
+	listNode* newNode;
+	listNode* temp;
+	newNode = (listNode*)malloc(sizeof(listNode));
 	strcpy(newNode->data, x);
 	newNode->link = NULL;
 	if (L->head == NULL) {
