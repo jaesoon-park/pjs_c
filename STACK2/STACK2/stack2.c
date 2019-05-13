@@ -83,4 +83,7 @@ element pop() {
 
 		item = pop(); printStack();
 		printf("\t pop => %d", item);
+		/*int a[4];
+		
+		for(int i = 0; */
 	}
