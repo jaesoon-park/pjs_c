@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include<memory.h>
 #include <stdlib.h>
-#define MAX_VERTEX 30
+#define MAX_VERTEX 10
+#define FALSE 0
+#define TRUE 1
 
 typedef struct graphNode {
 	int vertex;
@@ -10,12 +13,50 @@ typedef struct graphNode {
 typedef struct graphType {
 	int n;
 	graphNode* adjList_H[MAX_VERTEX];
+	int visited[MAX_VERTEX];
 }graphType;
+
+typedef int element;
+typedef struct stackNode {
+	int data;
+	struct stackNode *link;
+}stackNode;
+
+stackNode *top;
+
+int isEmpty() {
+	if (top == NULL)return 1;
+	else return 0;
+}
+
+void push(int item) {
+	stackNode* temp = (stackNode *)malloc(sizeof(stackNode));
+	temp->data = item;
+	temp->link = top;
+	top = temp;
+}
+
+int pop() {
+	int item;
+	stackNode* temp = top;
+	if (isEmpty()) {
+		printf("\n\n Stack is empty ! \n");
+		return 0;
+	}
+	else {
+		item = temp->data;
+		top = temp->link;
+		free(temp);
+		return item;
+	}
+}
+
 
 void createGraph(graphType* g) {
 	int v;
 	g->n = 0;
 	for (v = 0; v < MAX_VERTEX; v++) {
+		g->visited[v] = FALSE;
 		g->adjList_H[v] = NULL;
 	}
 }
@@ -54,59 +95,63 @@ void print_adjList(graphType* g) {
 	}
 }
 
+void DFS_adjList(graphType* g, int v) {
+	graphNode* w;
+	top = NULL;
+	push(v);
+	g->visited[v] = TRUE;
+	printf(" %c", v + 65);
+
+	while (!isEmpty()) {
+		v = pop();
+		w = g->adjList_H[v];
+		while (w) {
+			if (!g->visited[w->vertex]) {
+				if (isEmpty())push(v);
+				push(w->vertex);
+				g->visited[w->vertex] = TRUE;
+				printf(" %c", w->vertex + 65);
+				v = w->vertex;
+				w = g->adjList_H[v];
+			}
+			else w = w->link;
+		}
+	}
+
+}
 
 void main() {
 	int i;
-	graphType *G1, *G2, *G3, *G4;
-	G1 = (graphType *)malloc(sizeof(graphType));
-	G2 = (graphType *)malloc(sizeof(graphType));
-	G3 = (graphType *)malloc(sizeof(graphType));
-	G4 = (graphType *)malloc(sizeof(graphType));
+	graphType *G9;
+	G9 = (graphType *)malloc(sizeof(graphType));
+	
 
-	createGraph(G1); createGraph(G2); createGraph(G3); createGraph(G4);
+	createGraph(G9); 
 
-	for (i = 0; i < 4; i++)
-		insertVertex(G1, i);
-	insertEdge(G1,0 , 3);
-	insertEdge(G1, 0,1 );
-	insertEdge(G1,1 , 3);
-	insertEdge(G1, 1, 2);
-	insertEdge(G1,1 ,0 );
-	insertEdge(G1,2, 3);
-	insertEdge(G1, 2, 1);
-	insertEdge(G1, 3,2);
-	insertEdge(G1, 3,1 );
-	insertEdge(G1, 3, 0);
-	printf("\n G1의 인접 리스트");
-	print_adjList(G1);
+	for (i = 0; i < 7; i++)
+		insertVertex(G9, i);
+	insertEdge(G9,0 ,2);
+	insertEdge(G9, 0,1 );
+	insertEdge(G9,1 , 4);
+	insertEdge(G9, 1, 3);
+	insertEdge(G9,1 ,0 );
+	insertEdge(G9,2, 4);
+	insertEdge(G9, 2, 0);
+	insertEdge(G9, 3,6);
+	insertEdge(G9, 3,1 );
+	insertEdge(G9, 4, 6);
+	insertEdge(G9, 4, 2);
+	insertEdge(G9, 4, 1);
+	insertEdge(G9, 5, 6);
+	insertEdge(G9, 6, 5);
+	insertEdge(G9, 6, 4);
+	insertEdge(G9, 6, 3);
 
-	for (i = 0; i < 3; i++)
-		insertVertex(G2, i);
-	insertEdge(G2, 0, 2);
-	insertEdge(G2, 0, 1);
-	insertEdge(G2, 1, 2);
-	insertEdge(G2, 1, 0);
-	insertEdge(G2, 2, 1);
-	insertEdge(G2, 2, 0);
-	printf("\n G2의 인접 리스트");
-	print_adjList(G2);
+	printf("\n G9의 인접 리스트");
+	print_adjList(G9);
 
-	for (i = 0; i < 4; i++)
-		insertVertex(G3, i);
-	insertEdge(G3, 0, 3);
-	insertEdge(G3, 0, 1);
-	insertEdge(G3, 1, 3);
-	insertEdge(G3, 1, 2);
-	insertEdge(G3, 2, 3);
-	printf("\n G3의 인접 리스트");
-	print_adjList(G3);
+	printf("\n\n///////////////////////\n\n 깊이 우선탐색 >>");
+	DFS_adjList(G9, 0);
 
-	for (i = 0; i < 3; i++)
-		insertVertex(G4, i);
-	insertEdge(G4, 0, 2);
-	insertEdge(G4, 0, 1);
-	insertEdge(G4, 1, 2);
-	insertEdge(G4, 1, 0);
-	printf("\n G4의 인접 리스트");
-	print_adjList(G4);
+	
 }
