@@ -1,10 +1,9 @@
 #include <stdio.h>
-#include<memory.h>
+#include <memory.h>
 #include <stdlib.h>
 #define MAX_VERTEX 10
 #define FALSE 0
 #define TRUE 1
-
 
 typedef struct graphNode {
 	int vertex;
@@ -18,40 +17,59 @@ typedef struct graphType {
 }graphType;
 
 typedef int element;
-typedef struct stackNode {
+
+typedef struct QNode {
 	int data;
-	struct stackNode *link;
-}stackNode;
+	struct QNode *link;
+}QNode;
 
-stackNode *top;
+typedef struct {
+	struct QNode *front, *rear;
+}LQueueuType;
 
-int isEmpty() {
-	if (top == NULL)return 1;
+LQueueuType *createLinkedQueue() {
+	LQueueuType *LQ;
+	LQ = (LQueueuType *)malloc(sizeof(LQueueuType));
+	LQ->front = NULL;
+	LQ->rear = NULL;
+	return LQ;
+}
+
+int isEmpty(LQueueuType *LQ) {
+	if (LQ->front == NULL) {
+		printf(" Linked Queue is empty! ");
+		return 1;
+	}
 	else return 0;
 }
 
-void push(int item) {
-	stackNode* temp = (stackNode *)malloc(sizeof(stackNode));
-	temp->data = item;
-	temp->link = top;
-	top = temp;
-}
-
-int pop() {
-	int item;
-	stackNode* temp = top;
-	if (isEmpty()) {
-		printf("\n\n Stack is empty ! \n");
-		return 0;
+void enQueue(LQueueuType *LQ, element item) {
+	QNode *newNode = (QNode *)malloc(sizeof(QNode));
+	newNode->data = item;
+	newNode->link = NULL;
+	if (LQ->front == NULL) {
+		LQ->front = newNode;
+		LQ->rear = newNode;
 	}
 	else {
-		item = temp->data;
-		top = temp->link;
-		free(temp);
+		LQ->rear->link = newNode;
+		LQ->rear = newNode;
+	}
+}
+
+element deQueue(LQueueuType *LQ) {
+	QNode *old = LQ->front;
+	int item;
+	if (isEmpty(LQ))return 0;
+	else {
+		item = old->data;
+		LQ->front = LQ->front->link;
+		if (LQ->front == NULL)
+			LQ->rear = NULL;
+		free(old);
 		return item;
 	}
 }
-
 
 void createGraph(graphType* g) {
 	int v;
@@ -96,27 +114,23 @@ void print_adjList(graphType* g) {
 	}
 }
 
-void DFS_adjList(graphType* g, int v) {
+void BFS_adjList(graphType* g, int v) {
 	graphNode* w;
-	top = NULL;
-	push(v);
+	LQueueuType* Q;
+	Q = createLinkedQueue();
+	
 	g->visited[v] = TRUE;
 	printf(" %c", v + 65);
+	enQueue(Q, v);
 
-	while (!isEmpty()) {
-		v = pop();
-		w = g->adjList_H[v];
-		while (w) {
+	while (!isEmpty(Q)) {
+		v = deQueue(Q);
+		for(w = g ->adjList_H[v]; w; w = w->link)
 			if (!g->visited[w->vertex]) {
-				if (isEmpty())push(v);
-				push(w->vertex);
 				g->visited[w->vertex] = TRUE;
 				printf(" %c", w->vertex + 65);
-				v = w->vertex;
-				w = g->adjList_H[v];
+				enQueue(Q, w->vertex);
 			}
-			else w = w->link;
-		}
 	}
 
 }
@@ -125,21 +139,19 @@ void main() {
 	int i;
 	graphType *G9;
 	G9 = (graphType *)malloc(sizeof(graphType));
-	
-
-	createGraph(G9); 
+	createGraph(G9);
 
 	for (i = 0; i < 7; i++)
 		insertVertex(G9, i);
-	insertEdge(G9,0 ,2);
-	insertEdge(G9, 0,1 );
-	insertEdge(G9,1 , 4);
+	insertEdge(G9, 0, 2);
+	insertEdge(G9, 0, 1);
+	insertEdge(G9, 1, 4);
 	insertEdge(G9, 1, 3);
-	insertEdge(G9,1 ,0 );
-	insertEdge(G9,2, 4);
+	insertEdge(G9, 1, 0);
+	insertEdge(G9, 2, 4);
 	insertEdge(G9, 2, 0);
-	insertEdge(G9, 3,6);
-	insertEdge(G9, 3,1 );
+	insertEdge(G9, 3, 6);
+	insertEdge(G9, 3, 1);
 	insertEdge(G9, 4, 6);
 	insertEdge(G9, 4, 2);
 	insertEdge(G9, 4, 1);
@@ -151,8 +163,8 @@ void main() {
 	printf("\n G9의 인접 리스트");
 	print_adjList(G9);
 
-	printf("\n\n///////////////////////\n\n 깊이 우선탐색 >>");
-	DFS_adjList(G9, 0);
+	printf("\n\n///////////////////////\n\n 너비 우선탐색 >>");
+	BFS_adjList(G9, 0);
 
-	
+
 }
