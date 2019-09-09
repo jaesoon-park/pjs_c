@@ -23,5 +23,4 @@ int main()
 
 	printf("최댓값은 %d 입니다.\n", max);
 
-	return 0;
 }
